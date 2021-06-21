@@ -706,6 +706,8 @@ DefaultProperties
     DefaultPawnClass=class'`{GAMEMODE}Pawn'
     HUDType=class'`{GAMEMODE}HUD'
 
+    PlayerReplicationInfoClass=class'`{GAMEMODE}PRI'
+
     //This is the name that shows in the server browser for this mod:
     ModDisplayString="CompMod v2.0.3 [RANKED]"
 
