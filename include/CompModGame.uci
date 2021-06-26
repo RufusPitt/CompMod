@@ -335,8 +335,8 @@ Auto State AOCPreRound
 
         if (bRankedMode && !bRankedModeMatchMade && !bRankedModeReadyToStartMatch)
         {
-            ClearTimer('RequestMatchMake');
-            SetTimer(fRankedModeMatchMakeInterval, true, 'RequestMatchMake');
+            ClearTimer('RankedModeAttemptToMakeMatch');
+            SetTimer(fRankedModeMatchMakeInterval, true, 'RankedModeAttemptToMakeMatch');
         }
     }
 }
@@ -672,7 +672,7 @@ function OnUserConnectOnComplete(HttpRequestInterface OriginalRequest, HttpRespo
     RenamePlayerViaSteamID64(id, "[" $ elo $ "]" @ name);
 }
 
-function RequestMatchMake()
+function RankedModeAttemptToMakeMatch()
 {
     local int PlayerCount;
 
@@ -719,10 +719,10 @@ function RequestMatchMake()
         return;
     }
 
-    RankedAPI.CalculateMatchMaking(GetActualPlayersSteamIDs(), iRankedTeamSize, RequestMatchMakeOnComplete);
+    RankedAPI.CalculateMatchMaking(GetActualPlayersSteamIDs(), iRankedTeamSize, CalculateMatchMakingOnComplete);
 }
 
-function RequestMatchMakeOnComplete(HttpRequestInterface OriginalRequest, HttpResponseInterface Response, bool bDidSucceed)
+function CalculateMatchMakingOnComplete(HttpRequestInterface OriginalRequest, HttpResponseInterface Response, bool bDidSucceed)
 {
     local JsonObject data, team;
     local array<string> AgathaPlayerIDs, MasonPlayerIDs;
@@ -758,7 +758,7 @@ function RequestMatchMakeOnComplete(HttpRequestInterface OriginalRequest, HttpRe
 
     // Ensure we stop polling for a match
     bRankedModeMatchMade = true;
-    ClearTimer('RequestMatchMake');
+    ClearTimer('RankedModeAttemptToMakeMatch');
 
     // Save response payload
     sRankedModeMatchResponseData = Response.GetContentAsString();
@@ -779,7 +779,6 @@ function RequestMatchMakeOnComplete(HttpRequestInterface OriginalRequest, HttpRe
     AOCGRI(GameReplicationInfo).AgathaNameOverride = "[" $ team.GetIntValue("eloSum") / team.GetObject("players").ObjectArray.Length $ "]";
     team = data.GetObject("items").GetObject("Team2");
     AOCGRI(GameReplicationInfo).MasonNameOverride =  "[" $ team.GetIntValue("eloSum") / team.GetObject("players").ObjectArray.Length $ "]";
-
 
     // Start the match
     bRankedModeReadyToStartMatch = true;
