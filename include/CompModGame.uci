@@ -82,7 +82,10 @@ function GenericPlayerInitialization(Controller C)
     super.GenericPlayerInitialization(C);
 
     if (bRankedMode)
-        RankedAPI.OnUserConnect(OnlineSubsystemSteamworks(PlayerController(C).OnlineSub).UniqueNetIdToInt64(C.PlayerReplicationInfo.UniqueId), OnUserConnectOnComplete);
+        RankedAPI.OnUserConnect(OnlineSubsystemSteamworks(PlayerController(C).OnlineSub).UniqueNetIdToInt64(C.PlayerReplicationInfo.UniqueId),
+                                PlayerController(C).GetPlayerNetworkAddress(),
+                                PlayerController(C).GetServerNetworkAddress(),
+                                OnUserConnectOnComplete);
 }
 
 function Logout(Controller Exiting)
